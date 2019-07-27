@@ -16,4 +16,3 @@ steps:
       npm run static
       npm run build
     displayName: 'lint & build'
-    workingDirectory: $(ABSOLUTE_BUNDLE_ROOT)
