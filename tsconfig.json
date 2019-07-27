@@ -1,0 +1,12 @@
+{
+	"extends": "@supportclass/tsconfig-base",
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "dist",
+		"lib": ["es2017"],
+		"module": "commonjs",
+		"types": ["node"],
+		"sourceMap": true
+	},
+	"include": ["src/**/*.ts"]
+}

@@ -1,0 +1,46 @@
+pool:
+  vmImage: 'ubuntu-16.04'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+    displayName: 'Install Node.js'
+
+  - checkout: self
+
+  - bash: npm ci
+    displayName: 'install project npm deps'
+
+  - bash: |
+      npm run static
+      npm run build
+    displayName: 'lint & build'
+    workingDirectory: $(ABSOLUTE_BUNDLE_ROOT)
+
+  - publish: $(Agent.BuildDirectory)/nodecg
+    artifact: $(PIPELINE_ARTIFACT_NAME)
+
+  - script: |
+      npm i -g tap-xunit
+    displayName: 'install tap-xunit'
+
+  - bash: |
+      # Send test output to both the terminal (for in-flight obeservation),
+      # AND an XML (file for publishing).
+      npm run test -- --tap | tee ava.tap
+      cat ava.tap | tap-xunit > test-results.xml
+    displayName: 'test'
+    workingDirectory: $(Pipeline.Workspace)/$(PIPELINE_ARTIFACT_NAME)/bundles/$(BUNDLE_NAME)
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      # Although we are using xUnit format, we must tell Azure Pipleines to interpret it as JUnit.
+      # This is because the xUnit that Azure Pipelines uses is actually xUnit.net,
+      # which is not compatible with the xUnit format being output by tap-xunit.
+      # But, confusingly, JUnit _is_ compatible with it.
+      # Therefore, we tell Azure Pipelines to interpret our results as JUnit.
+      testRunner: JUnit
+      testResultsFiles: 'test-results.xml'
+      searchFolder: '$(Pipeline.Workspace)/$(PIPELINE_ARTIFACT_NAME)/bundles/$(BUNDLE_NAME)'

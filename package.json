@@ -1,0 +1,51 @@
+{
+	"name": "x32-fuzzer",
+	"description": "The Behringer X32 digital mixer has a rare crash bug. Let's find it.",
+	"version": "1.0.0",
+	"contributors": [
+		"Alex Van Camp <alexvancamp@gamesdonequick.com>"
+	],
+	"dependencies": {
+		"tslib": "^1.10.0"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^8.1.0",
+		"@commitlint/config-conventional": "^8.1.0",
+		"@supportclass/prettier-config": "^1.0.0",
+		"@supportclass/tsconfig-base": "^1.0.2",
+		"@types/node": "^12.6.8",
+		"@typescript-eslint/eslint-plugin": "^1.13.0",
+		"@typescript-eslint/parser": "^1.13.0",
+		"eslint": "^6.1.0",
+		"eslint-config-prettier": "^6.0.0",
+		"eslint-config-xo": "^0.26.0",
+		"eslint-config-xo-typescript": "^0.15.0",
+		"husky": "^3.0.1",
+		"npm-run-all": "^4.1.5",
+		"prettier": "^1.18.2",
+		"pretty-quick": "^1.11.1",
+		"trash-cli": "^3.0.0",
+		"ts-node": "^8.3.0",
+		"typescript": "^3.5.3"
+	},
+	"homepage": "https://gamesdonequick.com/",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/GamesDoneQuick/x32-fuzzer.git"
+	},
+	"scripts": {
+		"start": "ts-node ./src/index.ts",
+		"static": "npm-run-all -s static:*",
+		"static:lint": "eslint --parser-options=project:tsconfig.json \"src/**/*.ts\"",
+		"static:format": "prettier --list-different \"**/*.{ts,js,html,css,json,yml}\"",
+		"build": "tsc -p \"./tsconfig.json\"",
+		"format": "pretty-quick"
+	},
+	"husky": {
+		"hooks": {
+			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+			"pre-commit": "pretty-quick --staged"
+		}
+	}
+}
