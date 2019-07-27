@@ -6,7 +6,11 @@
 		"lib": ["es2017"],
 		"module": "commonjs",
 		"types": ["node"],
-		"sourceMap": true
+		"sourceMap": true,
+		"baseUrl": "./",
+		"paths": {
+			"*": ["./node_modules/*", "./types/*"]
+		}
 	},
 	"include": ["src/**/*.ts"]
 }
