@@ -1,4 +1,4 @@
-# x32-fuzzer
+# x32-fuzzer [![Build Status](https://dev.azure.com/gamesdonequick/x32-fuzzer/_apis/build/status/GamesDoneQuick.x32-fuzzer?branchName=master)](https://dev.azure.com/gamesdonequick/x32-fuzzer/_build/latest?definitionId=3&branchName=master)
 
 > The Behringer X32 digital mixer has a rare crash bug. Let's find it.
 
