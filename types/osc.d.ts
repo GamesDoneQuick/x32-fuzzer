@@ -3,6 +3,7 @@
 /* eslint-disable */
 
 import {EventEmitter} from 'events';
+import {Socket} from 'dgram';
 
 declare module 'osc' {
 	export const defaults: {
@@ -76,6 +77,8 @@ declare module 'osc' {
 	}
 
 	export abstract class Port extends EventEmitter implements OscSender {
+		socket: Socket;
+
 		send(msg: OscMessage, address?: string, port?: number): void;
 
 		// Events

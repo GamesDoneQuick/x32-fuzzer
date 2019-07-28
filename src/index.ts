@@ -1,10 +1,14 @@
 // Ours
-import {createSocket} from './socket';
-import * as heartbeat from './heartbeat';
+import {createHeartbeat} from './heartbeat';
+import {createFuzzer} from './fuzzer';
 
 async function init() {
-	const oscSocket = await createSocket();
-	await heartbeat.init(oscSocket);
+	const heartbeatEvents = await createHeartbeat();
+	const fuzzer = await createFuzzer();
+	fuzzer.start();
+	heartbeatEvents.on('👻', () => {
+		fuzzer.stop();
+	});
 }
 
 init().catch(error => {
