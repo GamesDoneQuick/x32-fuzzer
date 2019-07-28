@@ -5,11 +5,12 @@ import * as getPort from 'get-port';
 // Ours
 import {createLogger} from './logging';
 
-const log = createLogger('socket');
 const X32_UDP_PORT = 10023;
+let socketNumber = 0;
 
 export async function createSocket() {
 	const localPort = await getPort();
+	const log = createLogger(`socket-${socketNumber++}`);
 	return new Promise<osc.UDPPort>((resolve, reject) => {
 		let settled = false;
 
