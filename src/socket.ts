@@ -8,7 +8,7 @@ import {createLogger} from './logging';
 const X32_UDP_PORT = 10023;
 let socketNumber = 0;
 
-export async function createSocket() {
+export async function createSocket(): Promise<osc.UDPPort> {
 	const localPort = await getPort();
 	const log = createLogger(`socket-${socketNumber++}`);
 	return new Promise<osc.UDPPort>((resolve, reject) => {

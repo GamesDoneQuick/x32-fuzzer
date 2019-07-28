@@ -13,7 +13,7 @@ const HEARTBEAT_TIMEOUT = HEARTBEAT_INTERVAL * 3;
 const log = createLogger('heartbeat');
 let timeout: NodeJS.Timeout;
 
-export async function createHeartbeat() {
+export async function createHeartbeat(): Promise<Heartbeat> {
 	const oscSocket = await createSocket();
 	return new Heartbeat(oscSocket);
 }
@@ -55,7 +55,7 @@ class Heartbeat extends EventEmitter {
 	}
 }
 
-function sendHeartbeatRequest(oscSocket: osc.UDPPort) {
+function sendHeartbeatRequest(oscSocket: osc.UDPPort): void {
 	oscSocket.send({
 		address: '/info',
 		args: [],

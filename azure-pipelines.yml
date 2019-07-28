@@ -12,7 +12,5 @@ steps:
   - bash: npm ci
     displayName: 'install project npm deps'
 
-  - bash: |
-      npm run static
-      npm run build
+  - bash: npm run static && npm run build
     displayName: 'lint & build'
