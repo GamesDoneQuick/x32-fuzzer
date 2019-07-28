@@ -11,8 +11,15 @@ import {conf} from './config';
 
 const randomBytes = prb('lol here is a seed');
 const FUZZ_INTERVAL = 0;
+const genericLog = createLogger('fuzzing');
 let fuzzerNumber = 0;
 let cachedNonsenseOscMessage: osc.OscMessage = generateNonsenseOSC();
+if (!conf.get('fuzzing.random')) {
+	genericLog.info(
+		"This is the message we'll be sending over and over: %s",
+		JSON.stringify(cachedNonsenseOscMessage),
+	);
+}
 
 export async function createFuzzer(): Promise<Fuzzer> {
 	const oscSocket = await createSocket();
