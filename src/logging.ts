@@ -34,6 +34,27 @@ const transports: Transport[] = [
 	}),
 ];
 
-export function createLogger(_: string): winston.Logger {
-	return winston.createLogger({transports});
+transports.forEach(transport => {
+	transport.setMaxListeners(100);
+});
+
+export function createLogger(label: string): winston.Logger {
+	const logger = winston.createLogger({transports});
+	logger.setMaxListeners(100);
+
+	const proxy = new Proxy(logger, {
+		get(target, propName) {
+			const prop = target[propName as keyof winston.Logger];
+			if (typeof prop === 'function') {
+				return (...args: any[]) => {
+					args[0] = `[${label}] ${args[0]}`;
+					return (prop as any)(...args);
+				};
+			}
+
+			return prop;
+		},
+	});
+
+	return proxy;
 }
