@@ -9,7 +9,7 @@ import {createLogger} from './logging';
 import {createSocket} from './socket';
 
 const HEARTBEAT_INTERVAL = 100;
-const HEARTBEAT_TIMEOUT = HEARTBEAT_INTERVAL * 3;
+const HEARTBEAT_TIMEOUT = HEARTBEAT_INTERVAL * 6;
 const log = createLogger('heartbeat');
 let timeout: NodeJS.Timeout;
 

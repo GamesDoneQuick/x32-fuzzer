@@ -7,10 +7,12 @@ import prb = require('pseudo-random-buffer');
 // Ours
 import {createLogger} from './logging';
 import {createSocket} from './socket';
+import {conf} from './config';
 
 const randomBytes = prb('lol here is a seed');
-const FUZZ_INTERVAL = 10;
+const FUZZ_INTERVAL = 0;
 let fuzzerNumber = 0;
+let cachedNonsenseOscMessage: osc.OscMessage = generateNonsenseOSC();
 
 export async function createFuzzer(): Promise<Fuzzer> {
 	const oscSocket = await createSocket();
@@ -50,33 +52,40 @@ export class Fuzzer {
 	}
 
 	sendNonsenseOSC(): void {
-		const address = `/${randomString()}`;
-		const args: osc.MetaArgument[] = [
-			{
-				type: 's',
-				value: randomString(),
-			},
-			{
-				type: 'b',
-				value: randomBytes(32),
-			},
-			{
-				type: 'f',
-				value: randomUniform(-100, 100)(),
-			},
-			{
-				type: 'i',
-				value: Math.round(randomUniform(-1024, 1024)()),
-			},
-		];
+		let oscMessage: osc.OscMessage;
+		if (conf.get('random')) {
+			oscMessage = generateNonsenseOSC();
+			this._log.debug(JSON.stringify(oscMessage));
+		} else {
+			oscMessage = cachedNonsenseOscMessage;
+		}
 
-		this._log.debug('%s %s', address, JSON.stringify(args));
-
-		this._oscSocket.send({
-			address,
-			args,
-		});
+		this._oscSocket.send(oscMessage);
 	}
+}
+
+function generateNonsenseOSC(): osc.OscMessage {
+	const address = `/${randomString()}`;
+	const args: osc.MetaArgument[] = [
+		{
+			type: 's',
+			value: randomString(),
+		},
+		{
+			type: 'b',
+			value: randomBytes(conf.get('fuzzing.bufferSize')),
+		},
+		{
+			type: 'f',
+			value: randomUniform(-100, 100)(),
+		},
+		{
+			type: 'i',
+			value: Math.round(randomUniform(-1024, 1024)()),
+		},
+	];
+
+	return {address, args};
 }
 
 function randomString(): string {

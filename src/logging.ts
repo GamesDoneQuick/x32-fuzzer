@@ -30,6 +30,7 @@ const transports: Transport[] = [
 		filename: logPath,
 		maxsize: 1000000, // 1MB
 		maxFiles: 16,
+		tailable: true,
 	}),
 ];
 

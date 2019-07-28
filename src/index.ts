@@ -1,8 +1,9 @@
 // Ours
 import {createHeartbeat} from './heartbeat';
 import {createFuzzer, Fuzzer} from './fuzzer';
+import {conf} from './config';
 
-const NUM_FUZZERS = 9;
+const NUM_FUZZERS = conf.get('fuzzing.numFuzzers');
 
 async function init(): Promise<void> {
 	const heartbeatEvents = await createHeartbeat();
