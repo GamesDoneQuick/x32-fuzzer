@@ -53,7 +53,7 @@ export class Fuzzer {
 
 	sendNonsenseOSC(): void {
 		let oscMessage: osc.OscMessage;
-		if (conf.get('random')) {
+		if (conf.get('fuzzing.random')) {
 			oscMessage = generateNonsenseOSC();
 			this._log.debug(JSON.stringify(oscMessage));
 		} else {
