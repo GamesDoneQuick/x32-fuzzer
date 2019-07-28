@@ -10,16 +10,17 @@ import {createLogger} from './logging';
 import {createSocket} from './socket';
 
 const FUZZ_INTERVAL = 10;
+let fuzzerNumber = 0;
 
 export async function createFuzzer() {
 	const oscSocket = await createSocket();
 	return new Fuzzer(oscSocket);
 }
 
-class Fuzzer {
+export class Fuzzer {
 	private _oscSocket: osc.UDPPort;
 
-	private _log = createLogger('fuzzer');
+	private _log = createLogger(`fuzzer-${fuzzerNumber++}`);
 
 	private _fuzzInterval?: NodeJS.Timeout;
 
@@ -28,7 +29,6 @@ class Fuzzer {
 	}
 
 	start() {
-		this.stop();
 		this._log.info('Starting.');
 		this._fuzzInterval = setInterval(() => {
 			this.sendRealGarbage();

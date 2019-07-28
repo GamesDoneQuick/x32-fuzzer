@@ -1,13 +1,23 @@
 // Ours
 import {createHeartbeat} from './heartbeat';
-import {createFuzzer} from './fuzzer';
+import {createFuzzer, Fuzzer} from './fuzzer';
+
+const NUM_FUZZERS = 9;
 
 async function init() {
 	const heartbeatEvents = await createHeartbeat();
-	const fuzzer = await createFuzzer();
-	fuzzer.start();
+
+	const fuzzers: Fuzzer[] = [];
+	for (let i = 0; i < NUM_FUZZERS; i++) {
+		const fuzzer = await createFuzzer();
+		fuzzer.start();
+		fuzzers.push(fuzzer);
+	}
+
 	heartbeatEvents.on('👻', () => {
-		fuzzer.stop();
+		fuzzers.forEach(fuzzer => {
+			fuzzer.stop();
+		});
 	});
 }
 
