@@ -9,6 +9,7 @@
 		"d3-random": "^1.1.2",
 		"get-port": "^5.0.0",
 		"osc": "^2.3.1",
+		"pseudo-random-buffer": "^1.0.0",
 		"tslib": "^1.10.0",
 		"winston": "^3.2.1"
 	},
