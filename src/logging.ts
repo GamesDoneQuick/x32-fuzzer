@@ -33,6 +33,6 @@ const transports: Transport[] = [
 	}),
 ];
 
-export function createLogger(_label: string) {
+export function createLogger(_: string): winston.Logger {
 	return winston.createLogger({transports});
 }

@@ -12,7 +12,7 @@ const randomBytes = prb('lol here is a seed');
 const FUZZ_INTERVAL = 10;
 let fuzzerNumber = 0;
 
-export async function createFuzzer() {
+export async function createFuzzer(): Promise<Fuzzer> {
 	const oscSocket = await createSocket();
 	return new Fuzzer(oscSocket);
 }
@@ -28,19 +28,19 @@ export class Fuzzer {
 		this._oscSocket = oscSocket;
 	}
 
-	start() {
+	start(): void {
 		this._log.info('Starting.');
 		this._fuzzInterval = setInterval(() => {
 			this.sendNonsenseOSC();
 		}, FUZZ_INTERVAL);
 	}
 
-	stop() {
+	stop(): void {
 		this._log.info('Stopping');
 		clearInterval(this._fuzzInterval!);
 	}
 
-	sendRealGarbage() {
+	sendRealGarbage(): void {
 		const numBytes = Math.round(randomUniform(1, 1024)());
 		const dataToSend = randomBytes(numBytes);
 		this._oscSocket.socket.send(
@@ -49,7 +49,7 @@ export class Fuzzer {
 		);
 	}
 
-	sendNonsenseOSC() {
+	sendNonsenseOSC(): void {
 		const address = `/${randomString()}`;
 		const args: osc.MetaArgument[] = [
 			{
