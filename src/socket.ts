@@ -4,6 +4,7 @@ import * as getPort from 'get-port';
 
 // Ours
 import {createLogger} from './logging';
+import {conf} from './config';
 
 const X32_UDP_PORT = 10023;
 let socketNumber = 0;
@@ -17,7 +18,7 @@ export async function createSocket(): Promise<osc.UDPPort> {
 		const oscSocket = new osc.UDPPort({
 			localAddress: '0.0.0.0',
 			localPort,
-			remoteAddress: '192.168.1.9',
+			remoteAddress: conf.get('mixerIp'),
 			remotePort: X32_UDP_PORT,
 			metadata: true,
 		});
