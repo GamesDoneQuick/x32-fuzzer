@@ -50,26 +50,31 @@ export class Fuzzer {
 	}
 
 	sendNonsenseOSC() {
+		const address = `/${randomString()}`;
+		const args: osc.MetaArgument[] = [
+			{
+				type: 's',
+				value: randomString(),
+			},
+			{
+				type: 'b',
+				value: randomBytes(32),
+			},
+			{
+				type: 'f',
+				value: randomUniform(-100, 100)(),
+			},
+			{
+				type: 'i',
+				value: Math.round(randomUniform(-1024, 1024)()),
+			},
+		];
+
+		this._log.debug('%s %s', address, JSON.stringify(args));
+
 		this._oscSocket.send({
-			address: randomString(),
-			args: [
-				{
-					type: 's',
-					value: randomString(),
-				},
-				{
-					type: 'b',
-					value: randomBytes(32),
-				},
-				{
-					type: 'f',
-					value: randomUniform(-100, 100)(),
-				},
-				{
-					type: 'i',
-					value: Math.round(randomUniform(-1024, 1024)()),
-				},
-			],
+			address,
+			args,
 		});
 	}
 }
