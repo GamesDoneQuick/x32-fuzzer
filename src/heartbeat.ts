@@ -10,6 +10,7 @@ import {createSocket} from './socket';
 
 const HEARTBEAT_INTERVAL = 100;
 const HEARTBEAT_TIMEOUT = HEARTBEAT_INTERVAL * 6;
+const INIT_TIMEOUT = 5000;
 const log = createLogger('heartbeat');
 let timeout: NodeJS.Timeout;
 
@@ -36,12 +37,22 @@ class Heartbeat extends EventEmitter {
 
 		log.info('Starting heartbeat.');
 
+		const initTimeout = setTimeout(() => {
+			log.error(
+				'Failed to connect, is the mixer on and responding to pings?',
+			);
+			setTimeout(() => {
+				process.exit(1);
+			}, 100);
+		}, INIT_TIMEOUT);
+
 		this._oscSocket.on('raw', (buf: Buffer) => {
 			const str = buf.toString('ascii');
 			if (str.startsWith('/info')) {
 				if (!this._toldEm) {
 					log.info("Heartbeats workin'.");
 					this._toldEm = true;
+					clearTimeout(initTimeout);
 				}
 
 				clearTimeout(timeout);
