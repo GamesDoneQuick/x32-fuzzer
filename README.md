@@ -2,6 +2,12 @@
 
 > The Behringer X32 digital mixer has a rare crash bug. Let's find it.
 
+## Table of Contents
+
+-   [Motivation](#motivation)
+-   [Findings](#findings)
+-   [Installation and Usage](#installation-and-usage)
+
 ## Motivation
 
 The Behringer X32 is a very powerful and surprisingly affordable digital mixer. It's what GDQ uses for all of our shows.
@@ -9,6 +15,20 @@ The Behringer X32 is a very powerful and surprisingly affordable digital mixer. 
 This mixer also can also be controlled over the network via its OSC protocol. This is where the bug lies. There is some kind of race condition or resource contention which can cause the mixer to freeze, requiring a power cycle to restore normal operation.
 
 The goal of this repo is to build a fuzzer which can automatically discover a repro for this crash/freeze bug.
+
+## Findings
+
+This fuzzer is now complete and can crash the NIC of an X32 in about 30 seconds or less. It does this by generating a random OSC packet, and then sending copies of that same packet over and over again, as fast as possible, from 9 different client sockets.
+
+This means that the content data being sent doesn't matter too much, and what matters more is the _volume_ of data being sent. Perhaps this indicates that the root issue is a race condition or memory leak.
+
+We also discovered that just sending a high volume of random bytes won't crash the mixer. The data being sent does have to be valid OSC packets for the crash to occur.
+
+Most importantly, **we could not reproduce the crash when running only a single fuzzing client** (achieved via setting `fuzzing.numFuzzers` to `1` in `config.json`). The fuzzer was left running for 19 hours in this configuration, and no crash occurred. However, when running even just 2 fuzzing clients, the crash occurs within 5 minutes. **This suggests that the issue is only present when multiple clients are connected to the X32.**
+
+You'll know when the crash has occurred because the mixer will stop responding to pings, and the fuzzer script will say that it has stopped receiving heartbeats. Additionally, you'll see an error like this on the X32's main display:
+
+![img](https://i.imgur.com/s0hzH3H.jpg)
 
 ## Installation and Usage
 
@@ -40,13 +60,3 @@ The goal of this repo is to build a fuzzer which can automatically discover a re
     # From the x32-fuzzer directory:
     npm start
     ```
-	
-## Findings
-
-This fuzzer is now complete and can crash the NIC of an X32 in about 30 seconds or less. It does this by generating a random OSC packet, and then sending copies of that same packet over and over again, as fast as possible, from 9 different client sockets.
-
-This means that the data being sent doesn't matter too much, and what matters more is the _volume_ of data being sent. Perhaps this indicates that the root issue is a race condition or memory leak.
-
-You'll know when the crash has occurred because the mixer will stop responding to pings, and the fuzzer script will say that it has stopped receiving heartbeats. Additionally, you'll see an error like this on the X32's main display:
-
-![img](https://i.imgur.com/s0hzH3H.jpg)
