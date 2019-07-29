@@ -20,7 +20,7 @@ The goal of this repo is to build a fuzzer which can automatically discover a re
 
 This fuzzer is now complete and can crash the NIC of an X32 in about 30 seconds or less. It does this by generating a random OSC packet, and then sending copies of that same packet over and over again, as fast as possible, from 9 different client sockets.
 
-This means that the content data being sent doesn't matter too much, and what matters more is the _volume_ of data being sent. Perhaps this indicates that the root issue is a race condition or memory leak.
+This means that the contents of the packets being sent doesn't matter too much, and what matters more is the _volume_ of packets being sent. Perhaps this indicates that the root issue is a race condition or memory leak.
 
 We also discovered that just sending a high volume of random bytes won't crash the mixer. The data being sent does have to be valid OSC packets for the crash to occur.
 
