@@ -26,6 +26,8 @@ We also discovered that just sending a high volume of random bytes won't crash t
 
 Most importantly, **we could not reproduce the crash when running only a single fuzzing client** (achieved via setting `fuzzing.numFuzzers` to `1` in `config.json`). The fuzzer was left running for 19 hours in this configuration, and no crash occurred. However, when running even just 2 fuzzing clients, the crash occurs within 5 minutes. **This suggests that the issue is only present when multiple clients are connected to the X32.**
 
+Interestingly, when the mixer is in this crashed state, sending OSC over MIDI still works. The MIDI jacks seem totally unaffected by this particular crash that this fuzzer causes.
+
 You'll know when the crash has occurred because the mixer will stop responding to pings, and the fuzzer script will say that it has stopped receiving heartbeats. Additionally, you'll see an error like this on the X32's main display:
 
 ![img](https://i.imgur.com/s0hzH3H.jpg)
